@@ -14,16 +14,29 @@ import com.skimmy.androidutillibrary.time.DateAndTimeHelper;
 public class PTLocationListener implements LocationListener {
 
 	private File positionsFile;
+	private Location lastLocation;
 
 	public PTLocationListener(File posFile) {
 		this.positionsFile = posFile;
+		this.lastLocation = null;
 	}
 
 	private void logPosition(Location location) {
+		
+		String distance = "-";
+		String bearing = "-";
+		String speed = "-";
+		if (this.lastLocation != null) {
+			distance = "" + this.lastLocation.distanceTo(location);
+			bearing = "" + this.lastLocation.bearingTo(location);
+			long difftime = (location.getTime() - this.lastLocation.getTime()) / 1000;
+			float speedFloat = ((this.lastLocation.distanceTo(location)) / (float)difftime) * 3.6f;
+			speed = "" + speedFloat;
+		}
 		String logString = DateAndTimeHelper.getCurrentUTCTimestampString()
 				+ " " + location.getLatitude() + " " + location.getLongitude()
 				+ " " + location.getAccuracy() + " " + location.getProvider()
-				+ "\n";
+				+ " " + distance + " " + bearing + " " + speed + "\n";
 		FileWriter fw;
 		try {
 			// TODO Some "Thread-Safe" buffered method may be more appropriate
@@ -39,10 +52,11 @@ public class PTLocationListener implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.i("LocationListenr", location.toString());
+		Log.i("LocationListener", location.toString());
 		if (location != null) {
 			this.logPosition(location);
 		}
+		this.lastLocation = location;
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.skimmy.androidutillibrary.filesystem.AndroidFileHelper;
 import com.skimmy.androidutillibrary.filesystem.exceptions.FilesystemMismatchException;
+import com.skimmy.androidutillibrary.time.TimeConstants;
 
 import com.skimmy.publictransit.conf.PTParameters;
 
@@ -19,6 +20,15 @@ public class PTLocationService extends Service {
 
 	public static final String APP_SUBDIR_NAME = "PublicTransport/";
 	public static final String POSITIONS_FILE_NAME = "pos.dat";
+
+	// location updates parameters
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+	public static final int UPDATE_INTERVAL = UPDATE_INTERVAL_IN_SECONDS
+			* TimeConstants.MILLISECONDS_PER_SECOND;
+	public static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
+			* TimeConstants.MILLISECONDS_PER_SECOND;
+	
 
 	private File posFile = null;
 	private LocationManager locationManger = null;
@@ -86,6 +96,8 @@ public class PTLocationService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		this.locationManger.removeUpdates(this.locationListener);
+		
 	}
 
 }
