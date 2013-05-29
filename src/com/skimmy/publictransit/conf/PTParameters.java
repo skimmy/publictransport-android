@@ -2,6 +2,8 @@ package com.skimmy.publictransit.conf;
 
 import java.io.File;
 
+import com.skimmy.androidutillibrary.time.TimeConstants;
+
 public class PTParameters {
 	/*
 	 * General App Settings
@@ -12,7 +14,14 @@ public class PTParameters {
 	/*
 	 * Location service parameters
 	 */
-	public static long LOCATION_MINIMUM_UPDATE_TIME = 500;
+//	public static long LOCATION_MINIMUM_UPDATE_TIME = 500;
 	public static long LOCATION_MINIMUM_UPDATE_DISTANCE = 10;
 	public static String LOCATION_POSITION_LOG_FILENAME = "logpos.txt";
+
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+	public static final int UPDATE_INTERVAL = UPDATE_INTERVAL_IN_SECONDS
+			* TimeConstants.MILLISECONDS_PER_SECOND;
+	public static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
+			* TimeConstants.MILLISECONDS_PER_SECOND;
 }

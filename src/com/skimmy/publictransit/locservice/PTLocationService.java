@@ -10,34 +10,26 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
 import com.skimmy.androidutillibrary.filesystem.AndroidFileHelper;
 import com.skimmy.androidutillibrary.filesystem.exceptions.FilesystemMismatchException;
-import com.skimmy.androidutillibrary.time.TimeConstants;
-
 import com.skimmy.publictransit.conf.PTParameters;
 
 public class PTLocationService extends Service {
 
-	public static final String APP_SUBDIR_NAME = "PublicTransport/";
-	public static final String POSITIONS_FILE_NAME = "pos.dat";
-
-	// location updates parameters
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
-	public static final int UPDATE_INTERVAL = UPDATE_INTERVAL_IN_SECONDS
-			* TimeConstants.MILLISECONDS_PER_SECOND;
-	public static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
-			* TimeConstants.MILLISECONDS_PER_SECOND;
-	
-
 	private File posFile = null;
-	private LocationManager locationManger = null;
 	private PTLocationListener locationListener = null;
+
+	private LocationManager locationManger = null;
+	private LocationClient locationClient = null;
+	private LocationRequest locationRequest = null;
 
 	private File createOrGetPositionsFile() {
 		File ptSubDir = null;
 		try {
-			ptSubDir = AndroidFileHelper.getOrCreateDirectory(APP_SUBDIR_NAME);
+			ptSubDir = AndroidFileHelper
+					.getOrCreateDirectory(PTParameters.APP_DIRECTORY_NAME);
 		} catch (FilesystemMismatchException e) {
 			e.printStackTrace();
 		}
@@ -66,18 +58,36 @@ public class PTLocationService extends Service {
 		super.onStart(intent, startId);
 		Log.i("PTLocationService", "onStart method called! Id: " + startId);
 		this.posFile = this.createOrGetPositionsFile();
-		this.locationManger = this.getLocationManager();
-		this.locationListener = new PTLocationListener(this.posFile);
-		this.locationManger.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER,
-				PTParameters.LOCATION_MINIMUM_UPDATE_TIME,
-				PTParameters.LOCATION_MINIMUM_UPDATE_DISTANCE,
-				this.locationListener);
-		this.locationManger.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER,
-				PTParameters.LOCATION_MINIMUM_UPDATE_TIME,
-				PTParameters.LOCATION_MINIMUM_UPDATE_DISTANCE,
-				this.locationListener);
+
+		// test the availability of Google Play Services
+		if (GooglePlayLocationHelper.isGooglePlayServicesAvail(this)) {
+			Log.i(this.getClass().getName(),
+					"Using Google Play Services Location");
+			this.locationListener = new PTPlayServicesLocationListener(posFile,
+					this);
+
+			// this.locationRequest = LocationRequest.create();
+			// this.locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			// this.locationRequest.setInterval(PTParameters.UPDATE_INTERVAL);
+			// this.locationRequest.setFastestInterval(PTParameters.FASTEST_UPDATE_INTERVAL);
+			// this.locationClient = new LocationClient(this, playListener,
+			// playListener);
+
+		} else {
+			// resort to the system location service
+			Log.i(this.getClass().getName(), "Using System Location Services");
+			this.locationListener = new PTLocationListener(this.posFile);
+			this.locationManger = this.getLocationManager();
+			this.locationManger.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER,
+					PTParameters.UPDATE_INTERVAL,
+					PTParameters.LOCATION_MINIMUM_UPDATE_DISTANCE,
+					this.locationListener);
+			this.locationManger.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER, PTParameters.UPDATE_INTERVAL,
+					PTParameters.LOCATION_MINIMUM_UPDATE_DISTANCE,
+					this.locationListener);
+		}
 	}
 
 	@Override
@@ -96,8 +106,13 @@ public class PTLocationService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		this.locationManger.removeUpdates(this.locationListener);
-		
-	}
+		if (this.locationListener instanceof PTPlayServicesLocationListener) {
+			PTPlayServicesLocationListener temp = (PTPlayServicesLocationListener)this.locationListener;
+			temp.disconnectClient();
+		}
+		if (this.locationManger != null) {
+			this.locationManger.removeUpdates(this.locationListener);
+		}
 
+	}
 }

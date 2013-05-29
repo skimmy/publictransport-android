@@ -3,13 +3,16 @@ package com.skimmy.publictransit.locservice;
 import java.io.File;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.skimmy.publictransit.conf.PTParameters;
 
 public class PTPlayServicesLocationListener extends PTLocationListener
 		implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -26,11 +29,13 @@ public class PTPlayServicesLocationListener extends PTLocationListener
 		this.mRequest = LocationRequest.create();
 		// TODO: Change based on the power status (advanced feature)
 		this.mRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		this.mRequest.setInterval(PTLocationService.UPDATE_INTERVAL);
+		this.mRequest.setInterval(PTParameters.UPDATE_INTERVAL);
 		this.mRequest
-				.setFastestInterval(PTLocationService.FASTEST_UPDATE_INTERVAL);
+				.setFastestInterval(PTParameters.FASTEST_UPDATE_INTERVAL);
 
 		this.mClient = new LocationClient(this.appContext, this, this);
+		this.conncetClient();
+		this.startRequestUpdate();
 	}
 
 	public void startRequestUpdate() {
@@ -59,23 +64,29 @@ public class PTPlayServicesLocationListener extends PTLocationListener
 			this.mClient.disconnect();
 		}
 	}
+	
+	@Override
+	public void onLocationChanged(Location location) {
+		Log.i(this.getClass().getName(), "New Location from google play services");
+		super.onLocationChanged(location);
+	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
-		// TODO Auto-generated method stub
-
+		Log.i(this.getClass().getName(), "Google Play Services Connection Failed!");
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
+		Log.i(this.getClass().getName(), "Google Play Services Connected!");
 		if (this.updatingLocation) {
-			this.mClient.removeLocationUpdates(this);
+			this.mClient.requestLocationUpdates(this.mRequest, this);
 		}
 	}
 
 	@Override
 	public void onDisconnected() {
-		
+		Log.i(this.getClass().getName(), "Google Play Services Disconnected!");
 	}
 
 }
