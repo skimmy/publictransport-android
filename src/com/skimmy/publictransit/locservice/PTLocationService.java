@@ -29,7 +29,7 @@ public class PTLocationService extends Service {
 		File ptSubDir = null;
 		try {
 			ptSubDir = AndroidFileHelper
-					.getOrCreateDirectory(PTParameters.APP_DIRECTORY_NAME);
+					.getOrCreateDirectory(this, PTParameters.APP_DIRECTORY_NAME);
 		} catch (FilesystemMismatchException e) {
 			e.printStackTrace();
 		}
