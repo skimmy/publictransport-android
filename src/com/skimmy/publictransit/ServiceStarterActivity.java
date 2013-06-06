@@ -1,19 +1,25 @@
 package com.skimmy.publictransit;
 
 import com.skimmy.publictransit.locservice.GooglePlayLocationHelper;
+import com.skimmy.publictransit.locservice.LocationServiceBinder;
 import com.skimmy.publictransit.locservice.PTLocationService;
 
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-public class ServiceStarterActivity extends Activity {
+public class ServiceStarterActivity extends Activity implements ServiceConnection {
 
 	private boolean playServicesAvail;
+	private PTLocationService service = null;
+	private boolean serviceBound;
 
 	private void servicesInit() {
 		this.playServicesAvail = GooglePlayLocationHelper
@@ -71,6 +77,7 @@ public class ServiceStarterActivity extends Activity {
 		Log.i("ServiceStarterActivity", "Start Button Pressed");
 		Intent locationServiceIntent = new Intent(this, PTLocationService.class);
 		startService(locationServiceIntent);
+//		bindService(locationServiceIntent,this, 0);
 		return false;
 	}
 
@@ -79,6 +86,33 @@ public class ServiceStarterActivity extends Activity {
 		Intent locationServiceIntent = new Intent(this, PTLocationService.class);
 		stopService(locationServiceIntent);
 		return false;
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+		Log.i("ServiceStarterActivity", "onServiceConnected");
+		this.serviceBound = true;
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName arg0) {
+		Log.i(this.getClass().getName(), "onServiceDisconnected");
+		this.serviceBound = false;
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (this.serviceBound) {
+			unbindService(this);
+			this.serviceBound = false;
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		
+		super.onResume();
 	}
 
 }

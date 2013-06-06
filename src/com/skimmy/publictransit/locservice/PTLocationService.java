@@ -10,8 +10,6 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
 import com.skimmy.androidutillibrary.filesystem.AndroidFileHelper;
 import com.skimmy.androidutillibrary.filesystem.exceptions.FilesystemMismatchException;
 import com.skimmy.publictransit.conf.PTParameters;
@@ -20,10 +18,9 @@ public class PTLocationService extends Service {
 
 	private File posFile = null;
 	private PTLocationListener locationListener = null;
+	private LocationServiceBinder binder = null;
 
 	private LocationManager locationManger = null;
-	private LocationClient locationClient = null;
-	private LocationRequest locationRequest = null;
 
 	private File createOrGetPositionsFile() {
 		File ptSubDir = null;
@@ -92,8 +89,8 @@ public class PTLocationService extends Service {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		this.binder = new LocationServiceBinder(this);
+		return this.binder;
 	}
 
 	@Override
