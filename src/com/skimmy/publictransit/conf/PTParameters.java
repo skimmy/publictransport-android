@@ -14,7 +14,6 @@ public class PTParameters {
 	/*
 	 * Location service parameters
 	 */
-//	public static long LOCATION_MINIMUM_UPDATE_TIME = 500;
 	public static long LOCATION_MINIMUM_UPDATE_DISTANCE = 10;
 	public static String LOCATION_POSITION_LOG_FILENAME = "logpos.txt";
 

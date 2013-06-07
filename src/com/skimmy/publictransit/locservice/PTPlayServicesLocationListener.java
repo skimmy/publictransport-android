@@ -67,18 +67,18 @@ public class PTPlayServicesLocationListener extends PTLocationListener
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.i(this.getClass().getName(), "New Location from google play services");
+		Log.d(this.getClass().getName(), "New Location from google play services");
 		super.onLocationChanged(location);
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
-		Log.i(this.getClass().getName(), "Google Play Services Connection Failed!");
+		Log.d(this.getClass().getName(), "Google Play Services Connection Failed!");
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		Log.i(this.getClass().getName(), "Google Play Services Connected!");
+		Log.d(this.getClass().getName(), "Google Play Services Connected!");
 		if (this.updatingLocation) {
 			this.mClient.requestLocationUpdates(this.mRequest, this);
 		}
@@ -86,7 +86,7 @@ public class PTPlayServicesLocationListener extends PTLocationListener
 
 	@Override
 	public void onDisconnected() {
-		Log.i(this.getClass().getName(), "Google Play Services Disconnected!");
+		Log.d(this.getClass().getName(), "Google Play Services Disconnected!");
 	}
 
 }

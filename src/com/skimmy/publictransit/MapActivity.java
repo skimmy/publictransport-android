@@ -2,9 +2,14 @@ package com.skimmy.publictransit;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.Fragment;
 import android.view.Menu;
 
+/**
+ * This {@link Activity} contains the map fragment.
+ * 
+ * @author Michele Schimd
+ *
+ */
 public class MapActivity extends FragmentActivity {
 
 	@Override

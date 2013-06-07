@@ -53,7 +53,7 @@ public class PTLocationService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		Log.i("PTLocationService", "onStart method called! Id: " + startId);
+		Log.d("PTLocationService", "onStart method called! Id: " + startId);
 		this.posFile = this.createOrGetPositionsFile();
 
 		// test the availability of Google Play Services
@@ -63,16 +63,10 @@ public class PTLocationService extends Service {
 			this.locationListener = new PTPlayServicesLocationListener(posFile,
 					this);
 
-			// this.locationRequest = LocationRequest.create();
-			// this.locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-			// this.locationRequest.setInterval(PTParameters.UPDATE_INTERVAL);
-			// this.locationRequest.setFastestInterval(PTParameters.FASTEST_UPDATE_INTERVAL);
-			// this.locationClient = new LocationClient(this, playListener,
-			// playListener);
 
 		} else {
 			// resort to the system location service
-			Log.i(this.getClass().getName(), "Using System Location Services");
+			Log.d(this.getClass().getName(), "Using System Location Services");
 			this.locationListener = new PTLocationListener(this.posFile);
 			this.locationManger = this.getLocationManager();
 			this.locationManger.requestLocationUpdates(
@@ -95,14 +89,7 @@ public class PTLocationService extends Service {
 	}
 
 	@Override
-	public void onCreate() {
-		// TODO Auto-generated method stub
-		super.onCreate();
-	}
-
-	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		if (this.locationListener instanceof PTPlayServicesLocationListener) {
 			PTPlayServicesLocationListener temp = (PTPlayServicesLocationListener)this.locationListener;

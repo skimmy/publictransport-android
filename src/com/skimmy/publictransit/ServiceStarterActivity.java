@@ -1,5 +1,6 @@
 package com.skimmy.publictransit;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
@@ -10,8 +11,18 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 
+import com.skimmy.publictransit.fragments.ServiceStateFragment;
+import com.skimmy.publictransit.interfaces.LocationServiceManager;
 import com.skimmy.publictransit.locservice.PTLocationService;
 
+/**
+ * This {@link Activity} is used to show the state the location service and
+ * its control UI (via {@link ServiceStateFragment}). In order to embedd the
+ * mentioned fragment the activity must implement {@link LocationServiceManager}
+ * 
+ * @author Michele Schimd
+ *
+ */
 public class ServiceStarterActivity extends FragmentActivity implements LocationServiceManager {
 
 	@Override
@@ -28,6 +39,8 @@ public class ServiceStarterActivity extends FragmentActivity implements Location
 		return true;
 	}
 
+	/* Implementation of the LocationServiceManager interface */
+	
 	@Override
 	public boolean startLocationService() {		
 		Intent locationServiceIntent = new Intent(this, PTLocationService.class);
