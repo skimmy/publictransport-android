@@ -85,6 +85,7 @@ public class PTLocationService extends Service {
 					PTParameters.LOCATION_MINIMUM_UPDATE_DISTANCE,
 					this.locationListener);
 		}
+		Log.d(this.getClass().getName(), "Service Started");
 	}
 
 	@Override
@@ -110,6 +111,6 @@ public class PTLocationService extends Service {
 		if (this.locationManger != null) {
 			this.locationManger.removeUpdates(this.locationListener);
 		}
-
+		Log.d(this.getClass().getName(), "Service Destroyed");
 	}
 }
