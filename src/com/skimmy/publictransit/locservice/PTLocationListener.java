@@ -57,6 +57,7 @@ public class PTLocationListener implements LocationListener {
 			this.logPosition(location);
 		}
 		this.lastLocation = location;
+		LocationServiceProxy.lastLocation = location;
 	}
 
 	@Override

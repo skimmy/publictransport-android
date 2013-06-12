@@ -2,7 +2,10 @@ package com.skimmy.publictransit;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
@@ -15,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.skimmy.jgis.data.GeoPointWithAccuracy;
+import com.skimmy.publictransit.locservice.LocationServiceProxy;
 
 /**
  * This {@link Activity} contains the map fragment.
@@ -25,6 +29,8 @@ import com.skimmy.jgis.data.GeoPointWithAccuracy;
 public class MapActivity extends FragmentActivity {
 
 	private GoogleMap gMap;
+	
+	private Handler lastLocationHandler;
 
 	private static int BLUE_POINT_STROKE = Color.BLUE;
 	private static int BLUE_POINT_FILL = Color.argb(45, 0, 0, 255);
@@ -46,6 +52,7 @@ public class MapActivity extends FragmentActivity {
 			this.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(p,
 					DEFAULT_MOVE_ZOOM));
 		}
+
 	}
 
 	private void createTestOverlay() {
@@ -95,8 +102,15 @@ public class MapActivity extends FragmentActivity {
 				.findFragmentById(R.id.map);
 		this.gMap = mapFragment.getMap();
 		// this.createTestOverlay();
-		this.addGeoPointWithAccuracyToMap(new GeoPointWithAccuracy(45, 12, 25),
-				true);
+		Location lastLoc = LocationServiceProxy.lastLocation;
+		if (lastLoc != null) {
+			this.addGeoPointWithAccuracyToMap(new GeoPointWithAccuracy(lastLoc.getLatitude(), lastLoc.getLongitude(),
+					lastLoc.getAccuracy()), true);
+		}
+		this.lastLocationHandler = new Handler(Looper.getMainLooper()) {
+			
+		};
+			
 	}
 
 	@Override
