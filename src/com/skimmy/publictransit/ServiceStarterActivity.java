@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.skimmy.publictransit.fragments.ServiceStateFragment;
 import com.skimmy.publictransit.interfaces.LocationServiceManager;
@@ -65,6 +66,19 @@ public class ServiceStarterActivity extends FragmentActivity implements Location
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_map: {
+			Intent intent = new Intent(this, MapActivity.class);
+			startActivity(intent);
+		}
+		default: {
+			return super.onMenuItemSelected(featureId, item);
+		}
+		}
 	}
 
 }
