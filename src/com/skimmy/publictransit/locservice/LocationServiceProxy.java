@@ -1,6 +1,7 @@
 package com.skimmy.publictransit.locservice;
 
 import android.location.Location;
+import android.os.Handler;
 
 /**
  * {@link LocationServiceProxy} is the class used to buffer, process and present
@@ -18,6 +19,6 @@ import android.location.Location;
 public class LocationServiceProxy {
 	public static Location lastLocation = null;
 	
-	
+	public static Handler positionUpdateHandler = null;
 	
 }

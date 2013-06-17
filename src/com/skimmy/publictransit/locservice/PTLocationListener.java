@@ -7,6 +7,7 @@ import java.io.IOException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
 import com.skimmy.androidutillibrary.time.DateAndTimeHelper;
@@ -58,6 +59,12 @@ public class PTLocationListener implements LocationListener {
 		}
 		this.lastLocation = location;
 		LocationServiceProxy.lastLocation = location;
+		// TODO: This is just for test, the proxy should expose a method to update every handler
+		if (LocationServiceProxy.positionUpdateHandler != null) {
+			Message msg = new Message();
+			msg.obj = location;
+			LocationServiceProxy.positionUpdateHandler.sendMessage(msg);
+		}
 	}
 
 	@Override

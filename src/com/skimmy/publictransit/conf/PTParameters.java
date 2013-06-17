@@ -17,10 +17,10 @@ public class PTParameters {
 	public static long LOCATION_MINIMUM_UPDATE_DISTANCE = 10;
 	public static String LOCATION_POSITION_LOG_FILENAME = "logpos.txt";
 
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 7;
 	public static final int UPDATE_INTERVAL = UPDATE_INTERVAL_IN_SECONDS
 			* TimeConstants.MILLISECONDS_PER_SECOND;
-	public static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+	public static final int FASTEST_INTERVAL_IN_SECONDS = 3;
 	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
 			* TimeConstants.MILLISECONDS_PER_SECOND;
 }
