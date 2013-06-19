@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Public Transit</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="map_test">Welcome to MapActivity!</string>
+    <!-- App name and related strings -->
+    <string name="app_name">Social Transport</string>
+    <string name="app_author">Michele Schimd</string>
+    
+    <!-- Activity titles and other related strings -->
     <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_tab">Social Transit</string>
 
     <!-- Menu items strings -->
     <string name="action_settings">Settings</string>
@@ -17,6 +20,7 @@
     <string name="location_service_state_running">Running</string>
     <string name="location_service_state_stopped">Stopped</string>
     <string name="location_service_state_unknwon">Unknown</string>
-    <string name="title_activity_tab">TabActivity</string>
+    
+    
 
 </resources>

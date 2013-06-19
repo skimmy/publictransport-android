@@ -1,9 +1,6 @@
 package com.skimmy.publictransit;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +18,8 @@ import com.skimmy.publictransit.fragments.ServiceStateFragment;
 import com.skimmy.publictransit.fragments.TimetableFragment;
 import com.skimmy.publictransit.interfaces.LocationServiceManager;
 import com.skimmy.publictransit.locservice.PTLocationService;
+
+import com.skimmy.androidutillibrary.runtime.RuntimeInfoHelper;
 
 public class TabActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener, LocationServiceManager {
@@ -42,8 +41,8 @@ public class TabActivity extends SherlockFragmentActivity implements
 		setContentView(R.layout.activity_tab);
 		ActionBar aBar = getSupportActionBar();
 		aBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		aBar.setIcon(R.drawable.ic_action_map);
-		aBar.setTitle(R.string.action_map);
+		aBar.setIcon(R.drawable.ic_launcher);
+		aBar.setTitle(R.string.app_name);
 		this.addTabsToActionBar(aBar);
 	}
 
@@ -151,12 +150,6 @@ public class TabActivity extends SherlockFragmentActivity implements
 	
 	@Override
 	public boolean isServiceRunning() {
-		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo serviceInfo : manager.getRunningServices(Integer.MAX_VALUE)) {
-			if (PTLocationService.class.getName().equals(serviceInfo.service.getClassName())) {
-				return true;
-			}
-		}
-		return false;
+		return RuntimeInfoHelper.isServiceRunning(this, PTLocationService.class.getName());
 	}
 }

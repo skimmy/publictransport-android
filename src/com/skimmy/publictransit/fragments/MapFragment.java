@@ -22,7 +22,6 @@ public class MapFragment extends SupportMapFragment {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		this.gMap = getMap();
-		this.gMap.setMyLocationEnabled(true);
 	}
 
 }
