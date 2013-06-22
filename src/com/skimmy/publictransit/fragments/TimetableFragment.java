@@ -5,12 +5,15 @@ import java.util.List;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.google.android.gms.internal.eq.e;
+import com.skimmy.jgis.data.GeoPointWithAccuracy;
 import com.skimmy.publictransit.R;
 import com.skimmy.publictransit.adapters.TimetableListAdapter;
 import com.skimmy.publictransit.model.TimetableItem;
+import com.skimmy.publictransit.remote.RemoteServiceProxy;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 public class TimetableFragment extends SherlockListFragment {
@@ -38,5 +41,8 @@ public class TimetableFragment extends SherlockListFragment {
 		TimetableListAdapter mAdapter = new TimetableListAdapter(getActivity(),
 				R.layout.timetable_list_item, items);
 		setListAdapter(mAdapter);
+		for (GeoPointWithAccuracy p : RemoteServiceProxy.getTestStops(new GeoPointWithAccuracy(0, 0, 0))) {
+			Log.d("RemoteTest", "(" + p.getLat() + "," + p.getLon() + ") " + p.getAccuracy());
+		}
 	}
 }

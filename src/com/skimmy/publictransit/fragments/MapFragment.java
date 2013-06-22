@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -11,6 +12,8 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.maps.model.UrlTileProvider;
+import com.skimmy.jgis.data.GeoPointWithAccuracy;
+import com.skimmy.publictransit.remote.RemoteServiceProxy;
 
 public class MapFragment extends SupportMapFragment {
 	
@@ -32,8 +35,9 @@ public class MapFragment extends SupportMapFragment {
 		
 		TileOverlayOptions tOpts = new TileOverlayOptions().tileProvider(new OSMTileProvider());
 //		this.gMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-		this.gMap.setTrafficEnabled(true);
+//		this.gMap.setTrafficEnabled(true);
 //		this.gMap.addTileOverlay(tOpts);
+
 	}
 	
 	private class OSMTileProvider extends UrlTileProvider {
