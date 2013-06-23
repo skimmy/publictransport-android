@@ -24,12 +24,20 @@ import com.skimmy.androidutillibrary.runtime.RuntimeInfoHelper;
 public class TabActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener, LocationServiceManager {
 
+	// identify tabs
+	public static final int MAP_TAB = 0;
+	public static final int TIMETABLE_TAB = 1;
+	public static final int SERVICE_TAB = 2;
+
 	private ShareActionProvider mshareAction;
 
 	// tab fragments
 	private MapFragment mapFragment = null;
-	private ServiceStateFragment serviceFragment = null;
 	private TimetableFragment timetableFragment = null;
+	private ServiceStateFragment serviceFragment = null;
+
+	private ActionBar.Tab[] tabsArray;
+
 	private Fragment foregroundFragment = null;
 
 	@Override
@@ -49,26 +57,26 @@ public class TabActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		Fragment nextFragment = null;
-		
+
 		// NOTE: To get more responsive activity creation, fragments
-		// are created "on-demand" as the corresponding tab are selected		
-		if (tab.getPosition() == 0) {
+		// are created "on-demand" as the corresponding tab are selected
+		if (tab.getPosition() == MAP_TAB) {
 			if (this.mapFragment == null) {
 				this.mapFragment = new MapFragment();
 				ft.add(android.R.id.content, this.mapFragment);
 			}
 			nextFragment = this.mapFragment;
 		}
-		
-		if (tab.getPosition() == 1) {
+
+		if (tab.getPosition() == TIMETABLE_TAB) {
 			if (this.timetableFragment == null) {
 				this.timetableFragment = new TimetableFragment();
 				ft.add(android.R.id.content, this.timetableFragment);
 			}
 			nextFragment = this.timetableFragment;
 		}
-		
-		if (tab.getPosition() == 2) {
+
+		if (tab.getPosition() == SERVICE_TAB) {
 			if (this.serviceFragment == null) {
 				this.serviceFragment = new ServiceStateFragment();
 				ft.add(android.R.id.content, this.serviceFragment);
@@ -110,8 +118,13 @@ public class TabActivity extends SherlockFragmentActivity implements
 		return true;
 	}
 
-	private void addTabsToActionBar(ActionBar aBar) {
+	public void setTab(int tab) {
+		this.getSupportActionBar().selectTab(this.tabsArray[tab]);
+	}
 
+	private void addTabsToActionBar(ActionBar aBar) {
+		this.tabsArray = new ActionBar.Tab[3];
+		
 		// The map (default) tab
 		ActionBar.Tab mapTab = aBar.newTab().setIcon(R.drawable.ic_action_map)
 				.setTabListener(this);
@@ -129,12 +142,17 @@ public class TabActivity extends SherlockFragmentActivity implements
 		aBar.addTab(mapTab, 0);
 		aBar.addTab(timetableTab, 1);
 		aBar.addTab(serviceTab, 2);
+
+		// maintain references to all tabs
+		this.tabsArray[MAP_TAB] = mapTab;
+		this.tabsArray[TIMETABLE_TAB] = timetableTab;
+		this.tabsArray[SERVICE_TAB] = serviceTab;
 	}
 
-/* Implementation of the LocationServiceManager interface */
-	
+	/* Implementation of the LocationServiceManager interface */
+
 	@Override
-	public boolean startLocationService() {		
+	public boolean startLocationService() {
 		Intent locationServiceIntent = new Intent(this, PTLocationService.class);
 		ComponentName cName = startService(locationServiceIntent);
 		return (cName != null);
@@ -147,9 +165,10 @@ public class TabActivity extends SherlockFragmentActivity implements
 		stopService(locationServiceIntent);
 		return false;
 	}
-	
+
 	@Override
 	public boolean isServiceRunning() {
-		return RuntimeInfoHelper.isServiceRunning(this, PTLocationService.class.getName());
+		return RuntimeInfoHelper.isServiceRunning(this,
+				PTLocationService.class.getName());
 	}
 }
