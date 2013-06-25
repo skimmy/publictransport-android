@@ -18,6 +18,7 @@ import com.skimmy.publictransit.fragments.ServiceStateFragment;
 import com.skimmy.publictransit.fragments.TimetableFragment;
 import com.skimmy.publictransit.interfaces.LocationServiceManager;
 import com.skimmy.publictransit.locservice.PTLocationService;
+import com.skimmy.publictransit.model.GeoPositionedItem;
 
 import com.skimmy.androidutillibrary.runtime.RuntimeInfoHelper;
 
@@ -120,6 +121,11 @@ public class TabActivity extends SherlockFragmentActivity implements
 
 	public void setTab(int tab) {
 		this.getSupportActionBar().selectTab(this.tabsArray[tab]);
+	}
+	
+	public void showPositionedItemOnMap(GeoPositionedItem item) {
+		this.getSupportActionBar().selectTab(this.tabsArray[MAP_TAB]);
+		this.mapFragment.animateToPositionedItem(item);
 	}
 
 	private void addTabsToActionBar(ActionBar aBar) {

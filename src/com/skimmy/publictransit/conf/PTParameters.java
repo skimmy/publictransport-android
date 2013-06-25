@@ -23,4 +23,11 @@ public class PTParameters {
 	public static final int FASTEST_INTERVAL_IN_SECONDS = 3;
 	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
 			* TimeConstants.MILLISECONDS_PER_SECOND;
+	
+	/*
+	 * Map Parameters
+	 */
+	// CONSTANTS
+	public static final int MAP_TILE_GOOGLE = 1;
+	public static final int MAP_TILE_OPENSTREETMAP = 2;
 }

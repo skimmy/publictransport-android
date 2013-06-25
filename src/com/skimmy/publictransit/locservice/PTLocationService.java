@@ -49,10 +49,10 @@ public class PTLocationService extends Service {
 		return (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
 	}
-
+	
 	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
 		Log.d("PTLocationService", "onStart method called! Id: " + startId);
 		this.posFile = this.createOrGetPositionsFile();
 
@@ -80,6 +80,7 @@ public class PTLocationService extends Service {
 					this.locationListener);
 		}
 		Log.d(this.getClass().getName(), "Service Started");
+		return START_STICKY;
 	}
 
 	@Override

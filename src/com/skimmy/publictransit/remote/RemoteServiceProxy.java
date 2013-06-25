@@ -11,6 +11,7 @@ import com.google.api.services.pttest.model.EndpointswsMessagesGeoPointWithAccur
 import com.google.api.services.pttest.model.EndpointswsMessagesPositionedItemListMessage;
 import com.google.api.services.pttest.model.EndpointswsMessagesPositionedItemMessage;
 import com.skimmy.jgis.data.GeoPointWithAccuracy;
+import com.skimmy.publictransit.model.GeoPositionedItem;
 
 public class RemoteServiceProxy {
 
@@ -22,7 +23,7 @@ public class RemoteServiceProxy {
 		service = builder.build();
 	}
 
-	public static List<GeoPointWithAccuracy> getTestStops(
+	public static List<GeoPositionedItem> getTestStops(
 			GeoPointWithAccuracy near) {
 
 		EndpointswsMessagesGeoPointWithAccuracyMessage msg = new EndpointswsMessagesGeoPointWithAccuracyMessage();
@@ -37,7 +38,7 @@ public class RemoteServiceProxy {
 			e.printStackTrace();
 		}
 
-		List<GeoPointWithAccuracy> stops = new LinkedList<GeoPointWithAccuracy>();
+		List<GeoPositionedItem> stops = new LinkedList<GeoPositionedItem>();
 		if (itemList != null) {
 			List<EndpointswsMessagesPositionedItemMessage> msgList = itemList
 					.getItems();
@@ -48,8 +49,10 @@ public class RemoteServiceProxy {
 				if (acc == null) {
 					acc = Double.valueOf(0);
 				}
-				stops.add(new GeoPointWithAccuracy(lat.doubleValue(), lon
-						.doubleValue(), acc.doubleValue()));
+				GeoPositionedItem newStop = new GeoPositionedItem(lat.doubleValue(), lon
+						.doubleValue(), acc.doubleValue());
+				newStop.setId(m.getItemId());
+				stops.add(newStop);
 			}
 		}
 		return stops;

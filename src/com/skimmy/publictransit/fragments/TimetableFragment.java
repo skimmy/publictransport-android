@@ -3,15 +3,6 @@ package com.skimmy.publictransit.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.google.android.gms.internal.eq.e;
-import com.skimmy.jgis.data.GeoPointWithAccuracy;
-import com.skimmy.publictransit.TabActivity;
-import com.skimmy.publictransit.R;
-import com.skimmy.publictransit.adapters.TimetableListAdapter;
-import com.skimmy.publictransit.model.TimetableItem;
-import com.skimmy.publictransit.remote.RemoteServiceProxy;
-
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,23 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 
-public class TimetableFragment extends SherlockListFragment implements OnItemClickListener {
-	
-	TimetableListAdapter mAdapter = null;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.skimmy.jgis.data.GeoPointWithAccuracy;
+import com.skimmy.publictransit.R;
+import com.skimmy.publictransit.TabActivity;
+import com.skimmy.publictransit.adapters.PositionedItemAdapter;
+import com.skimmy.publictransit.model.GeoPositionedItem;
+import com.skimmy.publictransit.remote.RemoteServiceProxy;
 
-	private List<TimetableItem> getTimetableItmes() {
-		List<TimetableItem> list = new ArrayList<TimetableItem>();
-		for (int i = 0; i < 3; i++) {
-			TimetableItem tti = new TimetableItem("Name " + i,
-					"Short description #" + i, BitmapFactory.decodeResource(
-							this.getResources(),
-							R.drawable.ic_traffic_light_small));
-			list.add(tti);
-		}
-		return list;
-	}
+public class TimetableFragment extends SherlockListFragment implements
+		OnItemClickListener {
+
+	PositionedItemAdapter mAdapter = null;
 
 	public TimetableFragment() {
 		// TODO Auto-generated constructor stub
@@ -44,49 +31,51 @@ public class TimetableFragment extends SherlockListFragment implements OnItemCli
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		List<TimetableItem> items = this.getTimetableItmes();
-		mAdapter = new TimetableListAdapter(getActivity(),
+		List<GeoPositionedItem> items = new ArrayList<GeoPositionedItem>();// this.getTimetableItmes();
+		mAdapter = new PositionedItemAdapter(getActivity(),
 				R.layout.timetable_list_item, items);
 		setListAdapter(mAdapter);
 		this.getListView().setOnItemClickListener(this);
-		(new ItemsDownloader(0)).execute();		
+		(new ItemsDownloader(0)).execute();
 	}
-	
-	private class ItemsDownloader extends AsyncTask<Void, Void, List<GeoPointWithAccuracy>> {
-		
+
+	private class ItemsDownloader extends
+			AsyncTask<Void, Void, List<GeoPositionedItem>> {
+
 		public ItemsDownloader(int itemType) {
 			super();
 		}
 
 		@Override
-		protected List<GeoPointWithAccuracy> doInBackground(Void... params) {
-			List<GeoPointWithAccuracy> results = RemoteServiceProxy.getTestStops(new GeoPointWithAccuracy(0, 0, 0));
-			for (GeoPointWithAccuracy p : results) {
-				Log.d("RemoteTest", "(" + p.getLat() + "," + p.getLon() + ") " + p.getAccuracy());
+		protected List<GeoPositionedItem> doInBackground(Void... params) {
+			List<GeoPositionedItem> results = RemoteServiceProxy
+					.getTestStops(new GeoPointWithAccuracy(48.8, 2.29, 5000000));
+			for (GeoPositionedItem p : results) {
+				Log.d("RemoteTest", "(" + p.getLat() + "," + p.getLon() + ") "
+						+ p.getAccuracy());
 			}
-			return results;			
+			return results;
 		}
-		
+
 		@Override
-		protected void onPostExecute(List<GeoPointWithAccuracy> result) {
+		protected void onPostExecute(List<GeoPositionedItem> result) {
 			super.onPostExecute(result);
 			mAdapter.clear();
-			for (GeoPointWithAccuracy p : result) {
-				String posString = "(" + p.getLat() + "," + p.getLon() + ")";
-				String accString = "" + p.getAccuracy();
-				TimetableItem tti = new TimetableItem(posString,
-						accString, BitmapFactory.decodeResource(
-								getResources(),
-								R.drawable.ic_traffic_light_small));
-				mAdapter.add(tti);
+			for (GeoPositionedItem p : result) {
+				GeoPositionedItem pItem = new GeoPositionedItem(p.getLat(),
+						p.getLon(), p.getAccuracy());
+				pItem.setId(p.getId());
+				pItem.setIcon(BitmapFactory.decodeResource(getResources(),
+						R.drawable.ic_traffic_light_small));
+				mAdapter.add(pItem);
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		TabActivity tabAct = (TabActivity)this.getSherlockActivity();
-		tabAct.setTab(TabActivity.MAP_TAB);
+		TabActivity tabAct = (TabActivity) this.getSherlockActivity();
+		tabAct.showPositionedItemOnMap(this.mAdapter.getItem(arg2));
 	}
 }
