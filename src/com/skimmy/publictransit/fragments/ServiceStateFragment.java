@@ -1,18 +1,26 @@
 package com.skimmy.publictransit.fragments;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.skimmy.publictransit.R;
 import com.skimmy.publictransit.interfaces.LocationServiceManager;
+import com.skimmy.publictransit.locservice.LocationServiceProxy;
 
 /**
  * This fragment contains the UI to control the location service, it must be
@@ -27,9 +35,15 @@ public class ServiceStateFragment extends Fragment {
 
 	private LocationServiceManager serviceManager;
 
+	private Handler speedHandler;
+	private TimerTask speedUpdateTimerTask;
+	private Timer refreshTimer;
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		
 		
 		// obtain views
 		Button startServiceButton = (Button) getActivity().findViewById(
@@ -59,6 +73,18 @@ public class ServiceStateFragment extends Fragment {
 		
 		// refresh the status message in the UI
 		refreshServiceStatusTextView(serviceStateTextView);
+		
+		// create the handler for user speed update
+		final TextView speedTextView = (TextView)getActivity().findViewById(R.id.userSpeedTextView);
+		this.speedHandler = new Handler(new Handler.Callback() {			
+			@Override
+			public boolean handleMessage(Message msg) {
+				if (msg.obj != null) {
+					speedTextView.setText(msg.obj.toString());
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -77,6 +103,30 @@ public class ServiceStateFragment extends Fragment {
 			throw new ClassCastException(activity.toString()
 					+ " must implement LocationServiceManager");
 		}
+		this.refreshTimer = new Timer();
+		this.speedUpdateTimerTask = (new TimerTask()
+		{
+			@Override
+			public void run() {				
+				
+				Location lastLocation = LocationServiceProxy.lastLocation;
+				Message msg = new Message();
+				msg.obj = null;				
+				msg.obj = msg.obj = "" + Math.round(Math.random() * 50)  + " Km/h";
+				if (lastLocation != null && lastLocation.hasSpeed()) {
+					msg.obj = "" + Math.round(lastLocation.getSpeed() *3.6f) + " Km/h"; 
+				}
+				speedHandler.sendMessage(msg);
+			}
+		});
+		this.refreshTimer.schedule(speedUpdateTimerTask, 4000, 4000);
+		
+	}
+	
+	@Override
+	public void onDetach() {	
+		this.refreshTimer.cancel();
+		super.onDetach();
 	}
 
 	private void refreshServiceStatusTextView(TextView textView) {

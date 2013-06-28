@@ -17,9 +17,13 @@
     <string name="stop_service_button_text">Stop</string>
 
     <!-- These strings are displayed states for the location service -->
+    <string name="location_service_state_header">Service State </string>
     <string name="location_service_state_running">Running</string>
     <string name="location_service_state_stopped">Stopped</string>
     <string name="location_service_state_unknwon">Unknown</string>
+    <!-- Strings for the service fragment -->
+    <string name="service_fragment_user_speed_header">Speed: </string>
+    <string name="service_fragment_user_speed">- Km/h</string>
     
     
 
