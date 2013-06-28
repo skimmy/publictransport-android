@@ -22,6 +22,28 @@ public class RemoteServiceProxy {
 				AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
 		service = builder.build();
 	}
+	
+	public static List<GeoPositionedItem> fakeTestStops(
+			GeoPointWithAccuracy near) {
+		List<GeoPositionedItem> stops = new LinkedList<GeoPositionedItem>();
+		GeoPositionedItem tmp = new GeoPositionedItem(47.621800, -122.350326, 0);
+		tmp.setId("Seattle");		
+		tmp.setType(GeoPositionedItem.TYPE_STOP);
+		stops.add(tmp);
+		tmp = new GeoPositionedItem(55.5008, -0.1245, 0);
+		tmp.setId("BigBen");
+		tmp.setType(GeoPositionedItem.TYPE_STOP);
+		stops.add(tmp);
+		tmp = new GeoPositionedItem(48.8583, 2.2943, 0);
+		tmp.setId("Eiffel");
+		tmp.setType(GeoPositionedItem.TYPE_STOP);
+		stops.add(tmp);
+		tmp = new GeoPositionedItem(52.5162, 13.3778 , 0);
+		tmp.setId("Brandenburger");
+		tmp.setType(GeoPositionedItem.TYPE_STOP);
+		stops.add(tmp);		
+		return stops;
+	}
 
 	public static List<GeoPositionedItem> getTestStops(
 			GeoPointWithAccuracy near) {

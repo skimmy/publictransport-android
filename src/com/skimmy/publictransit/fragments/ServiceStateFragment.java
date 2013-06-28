@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -37,14 +36,14 @@ public class ServiceStateFragment extends Fragment {
 
 	private Handler speedHandler;
 	private TimerTask speedUpdateTimerTask;
+
+	// this timer is used to schedule tasks that refresh UI
 	private Timer refreshTimer;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
-		
+
 		// obtain views
 		Button startServiceButton = (Button) getActivity().findViewById(
 				R.id.service_start_button);
@@ -52,7 +51,7 @@ public class ServiceStateFragment extends Fragment {
 				R.id.service_stop_button);
 		final TextView serviceStateTextView = (TextView) getActivity()
 				.findViewById(R.id.serviceStateSummuryTextView);
-		
+
 		// register listeners
 		startServiceButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -70,13 +69,14 @@ public class ServiceStateFragment extends Fragment {
 				refreshServiceStatusTextView(serviceStateTextView);
 			}
 		});
-		
+
 		// refresh the status message in the UI
 		refreshServiceStatusTextView(serviceStateTextView);
-		
+
 		// create the handler for user speed update
-		final TextView speedTextView = (TextView)getActivity().findViewById(R.id.userSpeedTextView);
-		this.speedHandler = new Handler(new Handler.Callback() {			
+		final TextView speedTextView = (TextView) getActivity().findViewById(
+				R.id.userSpeedTextView);
+		this.speedHandler = new Handler(new Handler.Callback() {
 			@Override
 			public boolean handleMessage(Message msg) {
 				if (msg.obj != null) {
@@ -104,29 +104,38 @@ public class ServiceStateFragment extends Fragment {
 					+ " must implement LocationServiceManager");
 		}
 		this.refreshTimer = new Timer();
-		this.speedUpdateTimerTask = (new TimerTask()
-		{
+		this.speedUpdateTimerTask = (new TimerTask() {
 			@Override
-			public void run() {				
-				
+			public void run() {
+
 				Location lastLocation = LocationServiceProxy.lastLocation;
 				Message msg = new Message();
-				msg.obj = null;				
-				msg.obj = msg.obj = "" + Math.round(Math.random() * 50)  + " Km/h";
+				msg.obj = null;
 				if (lastLocation != null && lastLocation.hasSpeed()) {
-					msg.obj = "" + Math.round(lastLocation.getSpeed() *3.6f) + " Km/h"; 
+					msg.obj = "" + Math.round(lastLocation.getSpeed() * 3.6f)
+							+ " Km/h";
 				}
 				speedHandler.sendMessage(msg);
 			}
 		});
 		this.refreshTimer.schedule(speedUpdateTimerTask, 4000, 4000);
-		
+
 	}
-	
+
 	@Override
-	public void onDetach() {	
-		this.refreshTimer.cancel();
+	public void onDetach() {
+		if (this.refreshTimer != null) {
+			this.refreshTimer.cancel();
+		}
 		super.onDetach();
+	}
+
+	@Override
+	public void onDestroy() {
+		if (this.refreshTimer != null) {
+			this.refreshTimer.cancel();
+		}
+		super.onDestroy();
 	}
 
 	private void refreshServiceStatusTextView(TextView textView) {

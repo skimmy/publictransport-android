@@ -30,6 +30,9 @@ public class TabActivity extends SherlockFragmentActivity implements
 	public static final int TIMETABLE_TAB = 1;
 	public static final int SERVICE_TAB = 2;
 
+	// Bundle state keys
+	private static final String BUNDLE_CURRENT_TAB_INDEX_NAME = "ForegroundTab";
+
 	private ShareActionProvider mshareAction;
 
 	// tab fragments
@@ -40,6 +43,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 	private ActionBar.Tab[] tabsArray;
 
 	private Fragment foregroundFragment = null;
+	private int foregroundFragmentIndex;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,17 @@ public class TabActivity extends SherlockFragmentActivity implements
 		aBar.setIcon(R.drawable.ic_launcher);
 		aBar.setTitle(R.string.app_name);
 		this.addTabsToActionBar(aBar);
+		this.foregroundFragmentIndex = MAP_TAB;
+
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		Object obj = savedInstanceState.get(BUNDLE_CURRENT_TAB_INDEX_NAME);
+		if (obj != null) {
+			this.setTab((Integer) obj);
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 	@Override
@@ -67,6 +82,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 				ft.add(android.R.id.content, this.mapFragment);
 			}
 			nextFragment = this.mapFragment;
+			foregroundFragmentIndex = MAP_TAB;
 		}
 
 		if (tab.getPosition() == TIMETABLE_TAB) {
@@ -75,6 +91,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 				ft.add(android.R.id.content, this.timetableFragment);
 			}
 			nextFragment = this.timetableFragment;
+			foregroundFragmentIndex = TIMETABLE_TAB;
 		}
 
 		if (tab.getPosition() == SERVICE_TAB) {
@@ -83,6 +100,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 				ft.add(android.R.id.content, this.serviceFragment);
 			}
 			nextFragment = this.serviceFragment;
+			foregroundFragmentIndex = SERVICE_TAB;
 		}
 		if (nextFragment != null) {
 			ft.attach(nextFragment);
@@ -119,10 +137,17 @@ public class TabActivity extends SherlockFragmentActivity implements
 		return true;
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt(BUNDLE_CURRENT_TAB_INDEX_NAME,
+				this.foregroundFragmentIndex);
+		super.onSaveInstanceState(outState);
+	}
+
 	public void setTab(int tab) {
 		this.getSupportActionBar().selectTab(this.tabsArray[tab]);
 	}
-	
+
 	public void showPositionedItemOnMap(GeoPositionedItem item) {
 		this.getSupportActionBar().selectTab(this.tabsArray[MAP_TAB]);
 		this.mapFragment.animateToPositionedItem(item);
@@ -130,7 +155,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 
 	private void addTabsToActionBar(ActionBar aBar) {
 		this.tabsArray = new ActionBar.Tab[3];
-		
+
 		// The map (default) tab
 		ActionBar.Tab mapTab = aBar.newTab().setIcon(R.drawable.ic_action_map)
 				.setTabListener(this);

@@ -43,5 +43,10 @@ public class PositionedItemAdapter extends ArrayAdapter<GeoPositionedItem> {
 		}
 		return v;
 	}
+	
+	public GeoPositionedItem[] toArray() {
+		GeoPositionedItem[] array = new GeoPositionedItem[this.items.size()];
+		return this.items.toArray(array);
+	}
 
 }
