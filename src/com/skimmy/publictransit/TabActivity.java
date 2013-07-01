@@ -2,6 +2,7 @@ package com.skimmy.publictransit;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +18,12 @@ import com.skimmy.publictransit.fragments.MapFragment;
 import com.skimmy.publictransit.fragments.ServiceStateFragment;
 import com.skimmy.publictransit.fragments.TimetableFragment;
 import com.skimmy.publictransit.interfaces.LocationServiceManager;
+import com.skimmy.publictransit.locservice.LocationServiceProxy;
 import com.skimmy.publictransit.locservice.PTLocationService;
 import com.skimmy.publictransit.model.GeoPositionedItem;
 
 import com.skimmy.androidutillibrary.runtime.RuntimeInfoHelper;
+import com.skimmy.androidutillibrary.filesystem.SharedPreferencesHelper;
 
 public class TabActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener, LocationServiceManager {
@@ -32,6 +35,10 @@ public class TabActivity extends SherlockFragmentActivity implements
 
 	// Bundle state keys
 	private static final String BUNDLE_CURRENT_TAB_INDEX_NAME = "ForegroundTab";
+	// Shared preferences keys
+	private static final String PREF_NAME = "PTSharedPreferences";
+	private static final String PREF_LAST_POSITION_LAT = "LastPositionLatitude";
+	private static final String PREF_LAST_POSITION_LON = "LastPositionLongitude";
 
 	private ShareActionProvider mshareAction;
 
@@ -60,7 +67,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 		this.foregroundFragmentIndex = MAP_TAB;
 
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		Object obj = savedInstanceState.get(BUNDLE_CURRENT_TAB_INDEX_NAME);
@@ -68,6 +75,29 @@ public class TabActivity extends SherlockFragmentActivity implements
 			this.setTab((Integer) obj);
 		}
 		super.onRestoreInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	protected void onResume() {
+		float lat = SharedPreferencesHelper.getFloat(PREF_LAST_POSITION_LAT, PREF_NAME, this);
+		float lon = SharedPreferencesHelper.getFloat(PREF_LAST_POSITION_LON, PREF_NAME, this);
+		Location loadedLocation = new Location("Saved");
+		loadedLocation.setLatitude(lat);
+		loadedLocation.setLongitude(lon);
+		LocationServiceProxy.lastLocation = loadedLocation;
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		Location lastLocation = LocationServiceProxy.lastLocation;
+		if (lastLocation != null) {
+			SharedPreferencesHelper.saveFlaot(PREF_LAST_POSITION_LAT,
+					(float)lastLocation.getLatitude(), PREF_NAME, this);
+			SharedPreferencesHelper.saveFlaot(PREF_LAST_POSITION_LON,
+					(float)lastLocation.getLongitude(), PREF_NAME, this);
+		}
+		super.onPause();
 	}
 
 	@Override
