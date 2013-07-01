@@ -79,7 +79,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 		if (tab.getPosition() == MAP_TAB) {
 			if (this.mapFragment == null) {
 				this.mapFragment = new MapFragment();
-				ft.add(android.R.id.content, this.mapFragment);
+				ft.replace(android.R.id.content, this.mapFragment);
 			}
 			nextFragment = this.mapFragment;
 			foregroundFragmentIndex = MAP_TAB;
@@ -88,7 +88,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 		if (tab.getPosition() == TIMETABLE_TAB) {
 			if (this.timetableFragment == null) {
 				this.timetableFragment = new TimetableFragment();
-				ft.add(android.R.id.content, this.timetableFragment);
+				ft.replace(android.R.id.content, this.timetableFragment);
 			}
 			nextFragment = this.timetableFragment;
 			foregroundFragmentIndex = TIMETABLE_TAB;
@@ -97,7 +97,7 @@ public class TabActivity extends SherlockFragmentActivity implements
 		if (tab.getPosition() == SERVICE_TAB) {
 			if (this.serviceFragment == null) {
 				this.serviceFragment = new ServiceStateFragment();
-				ft.add(android.R.id.content, this.serviceFragment);
+				ft.replace(android.R.id.content, this.serviceFragment);
 			}
 			nextFragment = this.serviceFragment;
 			foregroundFragmentIndex = SERVICE_TAB;

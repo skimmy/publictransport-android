@@ -42,6 +42,7 @@ public class ServiceStateFragment extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		Log.d("SF_LC", "onActivityCreated");
 		super.onCreate(savedInstanceState);
 
 		// obtain views
@@ -51,6 +52,13 @@ public class ServiceStateFragment extends Fragment {
 				R.id.service_stop_button);
 		final TextView serviceStateTextView = (TextView) getActivity()
 				.findViewById(R.id.serviceStateSummuryTextView);
+		
+		try {
+			this.serviceManager = (LocationServiceManager) getActivity();
+		} catch (ClassCastException e) {
+			throw new ClassCastException(getActivity().toString()
+					+ " must implement LocationServiceManager");
+		}
 
 		// register listeners
 		startServiceButton.setOnClickListener(new View.OnClickListener() {
@@ -93,16 +101,19 @@ public class ServiceStateFragment extends Fragment {
 		return inflater.inflate(R.layout.fragment_service_state, container,
 				false);
 	}
-
+	
 	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			this.serviceManager = (LocationServiceManager) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement LocationServiceManager");
-		}
+	public void onResume() {
+		super.onResume();
+//		Activity activity = this.getActivity();
+//	}
+//
+//	@Override
+//	public void onAttach(Activity activity) {
+//		
+		Log.d("SF_LC", "onResume");
+//		super.onAttach(activity);
+
 		this.refreshTimer = new Timer();
 		this.speedUpdateTimerTask = (new TimerTask() {
 			@Override
@@ -121,20 +132,35 @@ public class ServiceStateFragment extends Fragment {
 		this.refreshTimer.schedule(speedUpdateTimerTask, 4000, 4000);
 
 	}
+	
+	@Override
+	public void onPause() {
+		Log.d("SF_LC", "onPause");
+		// TODO Auto-generated method stub
+		this.speedUpdateTimerTask.cancel();
+		this.refreshTimer.cancel();
+		super.onPause();
+	}
 
 	@Override
 	public void onDetach() {
-		if (this.refreshTimer != null) {
-			this.refreshTimer.cancel();
-		}
+		Log.d("SF_LC", "onDetach");
+//		if (this.refreshTimer != null) {
+//			this.refreshTimer.cancel();
+//		}
+//		this.refreshTimer = null;
+//		this.speedUpdateTimerTask.cancel();
 		super.onDetach();
 	}
 
 	@Override
 	public void onDestroy() {
-		if (this.refreshTimer != null) {
-			this.refreshTimer.cancel();
-		}
+		Log.d("SF_LC", "onDestroy");
+//		if (this.refreshTimer != null) {
+//			this.refreshTimer.cancel();
+//		}
+//		this.refreshTimer = null;
+//		this.speedUpdateTimerTask.cancel();
 		super.onDestroy();
 	}
 

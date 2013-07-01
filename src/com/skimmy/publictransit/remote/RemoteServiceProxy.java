@@ -30,7 +30,7 @@ public class RemoteServiceProxy {
 		tmp.setId("Seattle");		
 		tmp.setType(GeoPositionedItem.TYPE_STOP);
 		stops.add(tmp);
-		tmp = new GeoPositionedItem(55.5008, -0.1245, 0);
+		tmp = new GeoPositionedItem(51.5008, -0.1245, 0);
 		tmp.setId("BigBen");
 		tmp.setType(GeoPositionedItem.TYPE_STOP);
 		stops.add(tmp);

@@ -27,12 +27,6 @@ public class TimetableFragment extends SherlockListFragment implements
 
 	private PositionedItemAdapter mAdapter = null;
 	private ItemsDownloader itemsDownalodTask = null;
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -48,8 +42,20 @@ public class TimetableFragment extends SherlockListFragment implements
 				R.layout.timetable_list_item, items);
 		setListAdapter(mAdapter);
 		this.getListView().setOnItemClickListener(this);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		// TODO: this should be moved outside the activity callbacks
 		this.itemsDownalodTask = new ItemsDownloader(0);
 		this.itemsDownalodTask.execute();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		this.itemsDownalodTask.cancel(false);
 	}
 
 	@Override
@@ -60,13 +66,7 @@ public class TimetableFragment extends SherlockListFragment implements
 		}
 		super.onSaveInstanceState(outState);
 	}
-	
-	@Override
-	public void onDestroy() {
 
-		super.onDestroy();
-	}
-	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		TabActivity tabAct = (TabActivity) this.getSherlockActivity();
