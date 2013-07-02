@@ -10,6 +10,7 @@ public class PTParameters {
 	 */
 	public static String APP_DIRECTORY_NAME = "PublicTransport"
 			+ File.separatorChar;
+	public static String APP_PACKAGE_NAME = "com.skimmy.publictransit";
 
 	/*
 	 * Location service parameters
@@ -23,7 +24,12 @@ public class PTParameters {
 	public static final int FASTEST_INTERVAL_IN_SECONDS = 3;
 	public static final int FASTEST_UPDATE_INTERVAL = FASTEST_INTERVAL_IN_SECONDS
 			* TimeConstants.MILLISECONDS_PER_SECOND;
-	
+
+	public static final long GEOFENCE_DEFAULT_EXPIRATION_HOURS = 12;
+	public static final long GEOFENCE_DEFAULT_EXPIRATION_MSECS = GEOFENCE_DEFAULT_EXPIRATION_HOURS
+			* TimeConstants.SECONDS_PER_HOUR
+			* TimeConstants.MILLISECONDS_PER_SECOND;
+
 	/*
 	 * Map Parameters
 	 */

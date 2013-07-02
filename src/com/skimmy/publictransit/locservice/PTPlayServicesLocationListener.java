@@ -1,6 +1,7 @@
 package com.skimmy.publictransit.locservice;
 
 import java.io.File;
+import java.util.List;
 
 import android.content.Context;
 import android.location.Location;
@@ -22,6 +23,9 @@ public class PTPlayServicesLocationListener extends PTLocationListener
 	private LocationRequest mRequest;
 	private LocationClient mClient;
 	private boolean updatingLocation;
+	
+	// geofences variables
+	List<GeofenceHelper.SimpleGeofence> mGeofences;
 
 	public PTPlayServicesLocationListener(File posFile, Context ctx) {
 		super(posFile);
