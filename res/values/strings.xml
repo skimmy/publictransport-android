@@ -24,6 +24,8 @@
     <!-- Strings for the service fragment -->
     <string name="service_fragment_user_speed_header">Speed: </string>
     <string name="service_fragment_user_speed">- Km/h</string>
+    <string name="service_fragment_track_label_title">Tracking Session</string>
+    <string name="service_fragment_track_label_description">Records your route</string>
     
     
 
