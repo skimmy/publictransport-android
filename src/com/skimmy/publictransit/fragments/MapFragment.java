@@ -5,6 +5,7 @@ import java.net.URL;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,9 +21,13 @@ import com.skimmy.publictransit.locservice.LocationServiceProxy;
 import com.skimmy.publictransit.model.GeoPositionedItem;
 
 public class MapFragment extends SupportMapFragment {
+	
+	private static final String CLASS_TAG = MapFragment.class.getName();
 
 	private GoogleMap gMap;
 	private TileOverlay osmTiles = null;
+	
+	private boolean firstResume = true;
 
 	private void setMapTiles(int tileType) {
 		switch (tileType) {
@@ -51,11 +56,13 @@ public class MapFragment extends SupportMapFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(CLASS_TAG, "onCreate");
+		this.firstResume = true;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		Log.d(CLASS_TAG, "onActivityCreated");
 		super.onActivityCreated(savedInstanceState);
 		this.gMap = getMap();
 		setMapTiles(PTParameters.MAP_TILE_GOOGLE);
@@ -63,10 +70,11 @@ public class MapFragment extends SupportMapFragment {
 
 	@Override
 	public void onResume() {
-		// TODO: This should be done only the first time or if requested by the user
-		if (LocationServiceProxy.lastLocation != null) {
-			 this.animateToLocation(LocationServiceProxy.lastLocation);
-		}
+		Log.d(CLASS_TAG, "onResume");
+		if (LocationServiceProxy.lastLocation != null && firstResume) {
+		 this.animateToLocation(LocationServiceProxy.lastLocation);
+		 this.firstResume = false;
+	}
 		super.onResume();
 	}
 
